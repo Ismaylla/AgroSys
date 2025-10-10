@@ -11,16 +11,13 @@ import { UpdateSaleDto } from "@shared/dto/sale/update-sale.dto";
 import { SaleWithItems } from "@shared/types/product";
 import { ESaleStatus } from "@shared/enums/product.enum";
 import { ProductsService } from "../products/products.service";
-import { SellEvent } from "src/events/sell.event";
-import { EventEmitter2 } from "@nestjs/event-emitter";
 
 @Injectable()
 export class SalesService {
   constructor(
     @Inject(SALE_REPOSITORY)
     private readonly saleRepository: ISaleRepository,
-    private readonly productsService: ProductsService,
-    private eventEmitter: EventEmitter2
+    private readonly productsService: ProductsService
   ) {}
 
   async create(createSaleDto: CreateSaleDto): Promise<SaleWithItems> {
@@ -43,24 +40,20 @@ export class SalesService {
       await this.updateProductsStock(createSaleDto.items, "decrease");
     }
 
-    let saleId = sale.id;
-
-    this.eventEmitter.emit("sell.registered", { saleId });
-
     return sale;
   }
 
   async findAllPaginated(page: number, limit: number) {
     const offset = (page - 1) * limit;
 
-    const [sales, total] = await this.saleRepository.findAndCount({
+    const[sales, total] = await this.saleRepository.findAndCount({
       limit,
       offset,
     });
 
     const totalPages = Math.ceil(total / limit);
 
-    return {
+    return{
       data: sales,
       meta: {
         total,
