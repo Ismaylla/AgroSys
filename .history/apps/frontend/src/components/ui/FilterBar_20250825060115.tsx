@@ -35,22 +35,20 @@ export function FilterBar({
         </h3>
 
         <div className="flex flex-col sm:flex-row gap-3">
-          {filters != null
-            ? filters.map((filter) => (
-                <select
-                  key={filter.key}
-                  className="input-field max-w-xs border-agro-200"
-                  onChange={(e) => onFilterChange?.(filter.key, e.target.value)}
-                >
-                  <option value="">{filter.placeholder || filter.label}</option>
-                  {filter.options.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              ))
-            : ""}
+          {filters.map((filter) => (
+            <select
+              key={filter.key}
+              className="input-field max-w-xs border-agro-200"
+              onChange={(e) => onFilterChange?.(filter.key, e.target.value)}
+            >
+              <option value="">{filter.placeholder || filter.label}</option>
+              {filter.options.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          ))}
 
           {children}
         </div>

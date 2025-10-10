@@ -21,13 +21,7 @@ import { LogRegisterListener } from "src/listeners/logRegisterListener";
     EventEmitterModule.forRoot(),
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    JwtStrategy,
-    LocalStrategy,
-    SendConfirmationEmailListener,
-    LogRegisterListener,
-  ],
+  providers: [AuthService, JwtStrategy, LocalStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

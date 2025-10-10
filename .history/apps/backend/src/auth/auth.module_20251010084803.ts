@@ -18,16 +18,9 @@ import { LogRegisterListener } from "src/listeners/logRegisterListener";
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: "1d" },
     }),
-    EventEmitterModule.forRoot(),
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    JwtStrategy,
-    LocalStrategy,
-    SendConfirmationEmailListener,
-    LogRegisterListener,
-  ],
+  providers: [AuthService, JwtStrategy, LocalStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

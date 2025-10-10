@@ -31,7 +31,6 @@ import { EventEmitterModule } from "@nestjs/event-emitter";
     InputMaterialEntryModule,
     AlertsModule,
     InsumosModule,
-    EventEmitterModule.forRoot(),
   ],
 })
 export class AppModule {}

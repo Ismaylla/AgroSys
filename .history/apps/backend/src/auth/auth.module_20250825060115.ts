@@ -6,9 +6,6 @@ import { AuthController } from "./auth.controller";
 import { JwtStrategy } from "./strategies/jwt.strategy";
 import { LocalStrategy } from "./strategies/local.strategy";
 import { UsersModule } from "../users/users.module";
-import { EventEmitterModule } from "@nestjs/event-emitter";
-import { SendConfirmationEmailListener } from "src/listeners/sendEmailRegisterListener";
-import { LogRegisterListener } from "src/listeners/logRegisterListener";
 
 @Module({
   imports: [
@@ -18,16 +15,9 @@ import { LogRegisterListener } from "src/listeners/logRegisterListener";
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: "1d" },
     }),
-    EventEmitterModule.forRoot(),
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    JwtStrategy,
-    LocalStrategy,
-    SendConfirmationEmailListener,
-    LogRegisterListener,
-  ],
+  providers: [AuthService, JwtStrategy, LocalStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}
