@@ -79,7 +79,8 @@ export class AuthService {
     const user = await this.usersService.create(userToCreate);
     this.logger.log(`User registered successfully: ${user.email.getEmail()}`);
 
-    this.subject.notify(
+    this.eventEmitter.emit(
+      "register.created",
       new RegisterCreatedEvent(user.name.getName(), user.email.getEmail())
     );
 

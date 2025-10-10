@@ -18,6 +18,7 @@ import { Subject } from "src/observer/subject";
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: "1d" },
     }),
+    EventEmitterModule.forRoot(),
   ],
   controllers: [AuthController],
   providers: [
@@ -26,21 +27,7 @@ import { Subject } from "src/observer/subject";
     LocalStrategy,
     SendConfirmationEmailListener,
     LogRegisterListener,
-    Subject,
   ],
   exports: [AuthService],
 })
-export class AuthModule {
-  //Injetando nos construtores
-  constructor(
-    private readonly subject: Subject<any>,
-    private readonly emailListener: SendConfirmationEmailListener,
-    private readonly logListener: LogRegisterListener
-  ) {}
-
-  //iniciando listeners
-  onModuleInit() {
-    this.subject.attach(this.emailListener);
-    this.subject.attach(this.logListener);
-  }
-}
+export class AuthModule {}

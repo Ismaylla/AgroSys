@@ -30,17 +30,4 @@ import { Subject } from "src/observer/subject";
   ],
   exports: [AuthService],
 })
-export class AuthModule {
-  //Injetando nos construtores
-  constructor(
-    private readonly subject: Subject<any>,
-    private readonly emailListener: SendConfirmationEmailListener,
-    private readonly logListener: LogRegisterListener
-  ) {}
-
-  //iniciando listeners
-  onModuleInit() {
-    this.subject.attach(this.emailListener);
-    this.subject.attach(this.logListener);
-  }
-}
+export class AuthModule {}
