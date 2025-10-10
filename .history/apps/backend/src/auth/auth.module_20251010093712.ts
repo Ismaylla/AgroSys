@@ -38,6 +38,7 @@ import { LoginEvent } from "src/events/login-event";
 export class AuthModule {
   //Injetando nos construtores
   constructor(
+    private readonly subject: Subject<any>,
     @Inject("REGISTER_SUBJECT")
     private readonly subject: Subject<RegisterCreatedEvent>,
 
@@ -45,16 +46,12 @@ export class AuthModule {
     private readonly subjectLogin: Subject<LoginEvent>,
 
     private readonly emailListener: SendConfirmationEmailListener,
-    private readonly logListener: LogRegisterListener,
-
-    private readonly loginListener: LoginListener
+    private readonly logListener: LogRegisterListener
   ) {}
 
   //iniciando listeners
   onModuleInit() {
     this.subject.attach(this.emailListener);
     this.subject.attach(this.logListener);
-
-    this.subjectLogin.attach(this.loginListener);
   }
 }

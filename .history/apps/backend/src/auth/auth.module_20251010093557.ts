@@ -9,9 +9,6 @@ import { UsersModule } from "../users/users.module";
 import { SendConfirmationEmailListener } from "src/listeners/sendEmailRegisterListener";
 import { LogRegisterListener } from "src/listeners/logRegisterListener";
 import { Subject } from "src/observer/subject";
-import { RegisterCreatedEvent } from "src/events/register-created.event";
-import { LoginListener } from "src/listeners/loginListener";
-import { LoginEvent } from "src/events/login-event";
 
 @Module({
   imports: [
@@ -29,32 +26,21 @@ import { LoginEvent } from "src/events/login-event";
     LocalStrategy,
     SendConfirmationEmailListener,
     LogRegisterListener,
-    LoginListener,
-    { provide: "REGISTER_SUBJECT", useClass: Subject },
-    { provide: "LOGIN_SUBJECT", useClass: Subject },
+    Subject,
   ],
   exports: [AuthService],
 })
 export class AuthModule {
   //Injetando nos construtores
   constructor(
-    @Inject("REGISTER_SUBJECT")
-    private readonly subject: Subject<RegisterCreatedEvent>,
-
-    @Inject("LOGIN_SUBJECT")
-    private readonly subjectLogin: Subject<LoginEvent>,
-
+    private readonly subject: Subject<any>,
     private readonly emailListener: SendConfirmationEmailListener,
-    private readonly logListener: LogRegisterListener,
-
-    private readonly loginListener: LoginListener
+    private readonly logListener: LogRegisterListener
   ) {}
 
   //iniciando listeners
   onModuleInit() {
     this.subject.attach(this.emailListener);
     this.subject.attach(this.logListener);
-
-    this.subjectLogin.attach(this.loginListener);
   }
 }
