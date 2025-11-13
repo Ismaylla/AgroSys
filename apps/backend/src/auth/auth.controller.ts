@@ -1,3 +1,4 @@
+
 import {
   Controller,
   Post,
@@ -16,11 +17,15 @@ import { Email } from "@shared/value-objects/email.vo";
 import { Name } from "@shared/value-objects/name.vo";
 import { Password } from "@shared/value-objects/password.vo";
 
+import { Throttle } from "@nestjs/throttler";
+
 @ApiTags("auth")
 @Controller("auth")
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  // ✅ v6.4.0 -> usa objeto com nome do throttler
+  @Throttle({ default: { limit: 5, ttl: 600_000 } }) // 5 tentativas a cada 10 minutos
   @UseGuards(LocalAuthGuard)
   @Post("login")
   @ApiOperation({ summary: "Login de usuário" })
@@ -33,16 +38,12 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get("profile")
   @ApiOperation({ summary: "Obter perfil do usuário" })
-  @ApiResponse({ status: 200, description: "Perfil obtido com sucesso" })
-  @ApiResponse({ status: 401, description: "Não autorizado" })
   getProfile(@Request() req) {
     return req.user;
   }
 
   @Post("register")
   @ApiOperation({ summary: "Registrar novo usuário" })
-  @ApiResponse({ status: 201, description: "Usuário registrado com sucesso" })
-  @ApiResponse({ status: 400, description: "Dados inválidos" })
   async register(@Body() rawDto: RawCreateUserDto) {
     const dto = new CreateUserDto(
       new Email(rawDto.email),

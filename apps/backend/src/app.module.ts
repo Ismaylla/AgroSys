@@ -1,3 +1,4 @@
+
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { PrismaModule } from "./prisma/prisma.module";
@@ -15,55 +16,50 @@ import { InsumosModule } from "./insumos/insumos.module";
 import { EventEmitterModule } from "@nestjs/event-emitter";
 import { SellListener } from "./listeners/sellListener";
 
-// --- Imports Adicionados ---
 import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
 import { APP_GUARD } from "@nestjs/core";
-import { CacheModule } from '@nestjs/cache-manager'; // <-- ADICIONEI ESTA LINHA
+import { CacheModule } from "@nestjs/cache-manager";
 
 @Module({
-  imports: [
-    // --- Módulo Adicionado (Corrigido) ---
-    ThrottlerModule.forRoot([ // <-- Correção: Adicionado [
-      { // <-- Correção: Adicionado {
-        ttl: 1, // Tempo de vida em segundos (1 segundo)
-        limit: 50, // Limite de 50 requisições por IP a cada 1 segundo
-      } // <-- Correção: Adicionado }
-    ]), // <-- Correção: Adicionado ]
-    // --- Fim da Adição ---
+  imports: [
+    // ✅ Configuração correta para @nestjs/throttler@6.4.0
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000, // 1 minuto
+        limit: 50,  // 50 requisições por minuto (global)
+      },
+    ]),
 
-// --- Módulo de Cache Adicionado ---
-    CacheModule.register({
-      isGlobal: true, // Torna o cache disponível em toda a aplicação
-      ttl: 60 * 1000, // Tempo de vida do cache em milissegundos (60 segundos)
-    }),
-    // --- Fim da Adição ---
-    
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-    PrismaModule,
-    AuthModule,
-    UsersModule,
-    ToolModule,
-    ProductsModule,
-    SalesModule,
-    InvoicesModule,
-    HarvestsModule,
-    UapsModule,
-    InputMaterialEntryModule,
-    AlertsModule,
-    InsumosModule,
-    EventEmitterModule.forRoot(),
-  ],
-  providers: [
-    SellListener,
-    // --- Provider Adicionado ---
-    // Isso aplica o Rate Limiter em TODAS as rotas
-    {
-      provide: APP_GUARD,
-      useClass: ThrottlerGuard,
-    },
-    // --- Fim da Adição ---
-  ],
+    // ✅ Cache global
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 60 * 1000,
+    }),
+
+    // ✅ Demais módulos
+    ConfigModule.forRoot({ isGlobal: true }),
+    PrismaModule,
+    AuthModule,
+    UsersModule,
+    ToolModule,
+    ProductsModule,
+    SalesModule,
+    InvoicesModule,
+    HarvestsModule,
+    UapsModule,
+    InputMaterialEntryModule,
+    AlertsModule,
+    InsumosModule,
+    EventEmitterModule.forRoot(),
+  ],
+
+  providers: [
+    SellListener,
+    // ✅ Habilita o rate limiter global
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
