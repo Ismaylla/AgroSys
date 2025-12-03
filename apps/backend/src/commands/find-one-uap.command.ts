@@ -10,6 +10,8 @@ export class FindOneUapCommand implements Command<UAP> {
   ) {}
 
   async execute(): Promise<UAP> {
+    console.log(`Executando FindOneUapCommand para ID: ${this.id}`);
+
     const uap = await this.uapRepository.findOne(this.id);
 
     if (!uap) {

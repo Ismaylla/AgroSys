@@ -10,6 +10,8 @@ export class FindOneToolCommand implements Command<Tool> {
   ) {}
 
   async execute(): Promise<Tool> {
+    console.log(`Executando FindOneToolCommand para ID: ${this.id}`);
+
     const tool = await this.toolRepository.findOne(this.id);
 
     if (!tool) {

@@ -10,6 +10,8 @@ export class FindOneUserCommand implements Command<User> {
   ) {}
 
   async execute(): Promise<User> {
+    console.log(`Executando FindOneUserCommand para ID: ${this.id}`);
+    
     const user = await this.userRepository.findOne(this.id);
 
     if (!user) {

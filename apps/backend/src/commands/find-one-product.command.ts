@@ -10,6 +10,8 @@ export class FindOneProductCommand implements Command<Product> {
   ) {}
 
   async execute(): Promise<Product> {
+    console.log(`Executando FindOneProductCommand para ID: ${this.id}`);
+
     const product = await this.productRepository.findOne(this.id);
 
     if (!product) {
