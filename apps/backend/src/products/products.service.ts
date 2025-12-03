@@ -5,6 +5,7 @@ import { CreateProductDto } from "@shared/dto/product/create-product.dto";
 import { UpdateProductDto } from "@shared/dto/product/update-product.dto";
 import { Product } from "@shared/types/product";
 import { EProductStatus } from "@shared/enums/product.enum";
+import { FindOneProductCommand } from "../commands/find-one-product.command";
 
 @Injectable()
 export class ProductsService {
@@ -52,11 +53,8 @@ export class ProductsService {
   
 
   async findOne(id: string): Promise<Product> {
-    const product = await this.productRepository.findOne(id);
-    if (!product) {
-      throw new NotFoundException(`Produto com ID ${id} não encontrado`);
-    }
-    return product;
+    const command = new FindOneProductCommand(id, this.productRepository);
+    return command.execute();
   }
 
   async findByStatus(status: EProductStatus): Promise<Product[]> {

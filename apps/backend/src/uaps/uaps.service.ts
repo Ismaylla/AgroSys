@@ -4,6 +4,7 @@ import { UAP_REPOSITORY } from "./repositories/uapToken";
 import { CreateUapDto } from "@shared/dto/uap/create-uap.dto";
 import { UpdateUapDto } from "@shared/dto/uap/update-uap.dto";
 import { UAP } from "@shared/types/uap";
+import { FindOneUapCommand } from "../commands/find-one-uap.command";
 
 @Injectable()
 export class UapsService {
@@ -21,11 +22,8 @@ export class UapsService {
   }
 
   async findOne(id: string): Promise<UAP> {
-    const uap = await this.repository.findOne(id);
-    if (!uap) {
-      throw new NotFoundException(`UAP com ID ${id} não encontrada`);
-    }
-    return uap;
+    const command = new FindOneUapCommand(id, this.repository);
+    return command.execute();
   }
 
   async update(id: string, dto: UpdateUapDto): Promise<UAP> {

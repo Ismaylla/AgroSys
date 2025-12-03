@@ -5,6 +5,7 @@ import { Email } from "@shared/value-objects/email.vo";
 import { Name } from "@shared/value-objects/name.vo";
 import { Password } from "@shared/value-objects/password.vo";
 import { ERole } from "@shared/enums/user.enum";
+import { FindOneUserCommand } from "../commands/find-one-user.command";
 
 @Injectable()
 export class UsersService {
@@ -46,10 +47,7 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    const user = await this.userRepository.findById(id);
-    if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
-    return user;
+    const command = new FindOneUserCommand(id, this.userRepository);
+    return command.execute();
   }
 }

@@ -5,6 +5,7 @@ import { CreateToolDto } from "@shared/dto/tool/create-tool.dto";
 import { UpdateToolDto } from "@shared/dto/tool/update-tool.dto";
 import { EStatusTool, EToolName } from "@shared/enums/tool.enum";
 import { Tool } from "@prisma/client";
+import { FindOneToolCommand } from "../commands/find-one-tool.command";
 
 @Injectable()
 export class ToolService {
@@ -14,13 +15,8 @@ export class ToolService {
   ) {}
 
   async findOne(id: string): Promise<Tool> {
-    const tool = await this.toolRepository.findOne(id);
-    if (!tool) {
-      throw new NotFoundException(
-        `Ferramenta com o código ${id} não encontrada`
-      );
-    }
-    return tool;
+      const command = new FindOneToolCommand(id, this.toolRepository);
+      return command.execute();
   }
 
   async findAll(): Promise<Tool[]> {
